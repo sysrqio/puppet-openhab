@@ -38,7 +38,7 @@ I am using plugin sync, not tested it without.
 Get an Rpi with raspbian and use it :-) also normal debian should work
 
 ## Usage
-
+```
 My hiera file currenty looks like this:
 ---
 openhab::security_netmask:      10.0.1.0/24
@@ -56,7 +56,7 @@ openhab_addons:
     binding.zwave: {}
     io.myopenhab: {}
 ...
-
+```
 
 ## Reference
 
