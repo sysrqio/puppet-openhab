@@ -15,64 +15,62 @@
 
 ## Overview
 
-Installing openhab & addons, currently developing for RPi, but should also work
-on other Linux based system. Not using the OS version but the stock. 
+Installing openhab & addons, currently developing for RPi/raspbian and debian, but should also work
+on other Linux based system. Not using the OS version but the stock.
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
-
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+This module has as goal to simplify the installation and configuration of openhab.
+The reason to build this: I expect my microsd card to fail once in a while and I am
+too lazy to do a complete reinstall by hand.
 
 ## Setup
 
 ### What openhab affects
-
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+your household ;-)
 
 ### Setup Requirements **OPTIONAL**
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+I am using plugin sync, not tested it without.
 
 ### Beginning with openhab
 
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+Get an Rpi with raspbian and use it :-) also normal debian should work
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+My hiera file currenty looks like this:
+---
+openhab::security_netmask:      10.0.1.0/24
+openhab::binding_denon_id:      sr7005
+openhab::binding_denon_host:    10.0.1.125
+openhab::binding_denon_update:  telnet
+openhab::binding_mqtt_id:       raspi
+openhab::binding_mqtt_url:      tcp://localhost:1883
+openhab_addons:
+    binding.mqtt:
+        addon_version: "1.7.1"
+    binding.denon:
+        addon_version: "1.8.0-SNAPSHOT"
+        sourceurl:     "https://openhab.ci.cloudbees.com/job/openHAB/lastSuccessfulBuild/artifact/distribution/target/"
+    binding.zwave: {}
+    io.myopenhab: {}
+...
+
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+I use it with the profiles and roles pattern, will post examples in the future
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Currently you can use plugins from a different version but you are limited to a single
+source for a version, you cant have by example 2 different 1.7.1 versions
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+Really feel free to fork and make contributions. This is my first OSS module...
 
 ## Release Notes/Contributors/Etc **Optional**
 
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+Currently working on getting all the basics working. For lots of addons I do accept pull requests ;-)
