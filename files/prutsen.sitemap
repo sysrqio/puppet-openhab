@@ -1,0 +1,17 @@
+sitemap default label="Prutsen"
+{
+        Frame label="Totaal verbruik" {
+                Text item=Z_N_Living_Energy
+        }
+
+        Frame label="Huidig verbruik" {
+                Text item=Z_N_Living_Power
+        }
+        Frame label="Schakelaars" {
+                Switch item=Z_S_Living label="Lamp"
+                Switch item=DenonPower label="Receiver"
+        }
+        Frame label="Camera" {
+                    Video url="http://10.0.1.51:8081/mjpeg/" encoding="mjpeg"
+     }
+}

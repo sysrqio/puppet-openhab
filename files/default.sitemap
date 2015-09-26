@@ -1,0 +1,14 @@
+sitemap default label="Main Menu"
+{
+        Frame label="Totaal verbruik" {
+                Text item=Z_N_Living_Energy
+        }
+
+        Frame label="Huidig verbruik" {
+                Text item=Z_N_Living_Power
+        }
+        Frame label="Schakelaars" {
+        Switch item=Z_S_Living label="Lamp"
+        Switch item=DenonPower label="Receiver"
+        }
+}

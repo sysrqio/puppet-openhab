@@ -1,0 +1,19 @@
+Group All
+Group gGroundFloor (All)
+
+Group GF_Living "Living Room" <video> (gGroundFloor)
+
+Switch Z_S_Living
+    "Living plug"
+    (Lights)
+    {zwave="4:command=switch_binary"}
+Number Z_N_Living_Power
+    "Huidig verbruik  [%.1f W]"
+    (zPower)
+    { zwave="4:command=sensor_multilevel" }
+Number Z_N_Living_Energy
+    "Stekker verbruik totaal:  [%.2f KWh]"
+    (zPower)
+    { zwave="4:command=meter" }
+
+Switch DenonPower           "Power"                 {denon="avr2000#PW"}

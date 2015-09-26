@@ -1,0 +1,29 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.joda.time.*
+
+var Boolean bWasmachine = false
+var Timer tWasmachine = null
+
+rule "Wasmachine"
+when
+        Item Z_N_Living_Power received update
+then
+        if (Z_N_Living_Power.state > 5) {
+                if (bWasmachine == false) {
+                        bWasmachine = true
+                }
+                if (tWasmachine != null) {
+                        tWasmachine.cancel
+                        tWasmachine = null
+                }
+        } else if (Z_N_Living_Power.state <= 5 && bWasmachine == true && tWasmachine == null) {
+                tWasmachine = createTimer(now.plusMinutes(2)) [|
+                        bWasmachine = false
+                        tWasmachine = null
+
+			pushover("wasmachine klaar")
+                ]
+        }
+end
