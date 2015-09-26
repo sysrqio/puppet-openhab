@@ -4,9 +4,9 @@
   "author": "Mans Matulewicz",
   "summary": null,
   "license": "Apache 2.0",
-  "source": "",
-  "project_page": null,
-  "issues_url": null,
+  "source": "https://github.com/MansM/puppet-openhab.git",
+  "project_page": "https://github.com/MansM/puppet-openhab",
+  "issues_url": "https://github.com/MansM/puppet-openhab/issues",
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
     {"name":"nanliu-archive","version_requirement":">= 0.3.0"}
