@@ -12,6 +12,7 @@
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
+    * [Todo - my todo list](#todo)
 
 ## Overview
 
@@ -35,7 +36,8 @@ I am using plugin sync, not tested it without.
 
 ### Beginning with openhab
 
-Get an Rpi with raspbian and use it :-) also normal debian should work
+Get an Rpi with raspbian and use it :-) also normal debian should work,
+java should already be installed. I have done this in my profile 
 
 ## Usage
 
@@ -70,8 +72,15 @@ source for a version, you cant have by example 2 different 1.7.1 versions
 
 ## Development
 
-Really feel free to fork and make contributions. This is my first OSS module...
+Currently working on getting all the basics working. For lots of addons I do accept pull requests ;-)
+
+### Todo
+* support for your own items/rules/sitemaps
+* habmin support
+* fixing the custom facts for myopenhab uuid/secret (can use some help)
+* java is now in a seperate profile for me, but need to mention it somewhere
+* test on centos/etc
 
 ## Release Notes/Contributors/Etc **Optional**
 
-Currently working on getting all the basics working. For lots of addons I do accept pull requests ;-)
+* 0.14: support for MySQL persistence

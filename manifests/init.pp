@@ -36,26 +36,33 @@
 # Copyright 2015 Mans Matulewicz
 #
 class openhab (
-  $version                    = $::openhab::params::version,
-  $install_dir                = $::openhab::params::install_dir,
-  $sourceurl                  = $::openhab::params::sourceurl,
-  $security_netmask           = $::openhab::params::security_netmask,
+  $version                        = $::openhab::params::version,
+  $install_dir                    = $::openhab::params::install_dir,
+  $sourceurl                      = $::openhab::params::sourceurl,
+  $security_netmask               = $::openhab::params::security_netmask,
 
 #denon binding
-  $binding_denon_id           = $::openhab::params::binding_denon_id,
-  $binding_denon_host         = $::openhab::params::binding_denon_host,
-  $binding_denon_update       = $::openhab::params::binding_denon_update,
+  $binding_denon_id               = $::openhab::params::binding_denon_id,
+  $binding_denon_host             = $::openhab::params::binding_denon_host,
+  $binding_denon_update           = $::openhab::params::binding_denon_update,
 
 #mosquitto binding
-  $binding_mqtt_id            = $::openhab::params::binding_mqtt_id,
-  $binding_mqtt_url           = $::openhab::params::binding_mqtt_url,
-  $binding_mqtt_clientId      = $::openhab::params::binding_mqtt_clientId, #todo-opt
-  $binding_mqtt_user          = $::openhab::params::binding_mqtt_user, #todo-opt
-  $binding_mqtt_password      = $::openhab::params::binding_mqtt_password, #todo-opt
-  $binding_mqtt_qos           = $::openhab::params::binding_mqtt_qos, #todo-opt
-  $binding_mqtt_retain        = $::openhab::params::binding_mqtt_retain, #todo-opt
-  $binding_mqtt_async         = $::openhab::params::binding_mqtt_async, #todo-opt
-  $binding_mqtt_lwt           = $::openhab::params::binding_mqtt_lwt, #todo-opt
+  $binding_mqtt_id                = $::openhab::params::binding_mqtt_id,
+  $binding_mqtt_url               = $::openhab::params::binding_mqtt_url,
+  $binding_mqtt_clientId          = $::openhab::params::binding_mqtt_clientId, #todo-opt
+  $binding_mqtt_user              = $::openhab::params::binding_mqtt_user, #todo-opt
+  $binding_mqtt_password          = $::openhab::params::binding_mqtt_password, #todo-opt
+  $binding_mqtt_qos               = $::openhab::params::binding_mqtt_qos, #todo-opt
+  $binding_mqtt_retain            = $::openhab::params::binding_mqtt_retain, #todo-opt
+  $binding_mqtt_async             = $::openhab::params::binding_mqtt_async, #todo-opt
+  $binding_mqtt_lwt               = $::openhab::params::binding_mqtt_lwt, #todo-opt
+
+#persistence mysql
+  $persistence_mysql_url          = $::openhab::params::mysql_url,
+  $persistence_mysql_user         = $::openhab::params::mysql_user,
+  $persistence_mysql_password     = $::openhab::params::mysql_password,
+  $persistence_mysql_reconnectCnt = $::openhab::params::mysql_reconnectCnt,
+  $persistence_mysql_waitTimeout  = $::openhab::params::mysql_waitTimeout,
 
   ) inherits ::openhab::params{
 
@@ -111,6 +118,7 @@ class openhab (
     path    => "${install_dir}/configurations/openhab.cfg",
     content => template('openhab/openhab.cfg.erb'),
     require => Archive['openhab-runtime'],
+    notify  => Service['openhab'],
 } ->
   service {'openhab':
     ensure    => running,

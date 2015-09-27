@@ -354,19 +354,40 @@ logging:pattern=%date{ISO8601} - %-25logger: %msg%n
 
 ############################ SQL Persistence Service ##################################
 # the database url like 'jdbc:mysql://<host>:<port>/<database>' (without quotes)
+<% if @persistence_mysql_url != false %>
+mysql:url=<%= @persistence_mysql_url %>
+<% else %>
 #mysql:url=
+<% end %>
 
 # the database user
+<% if @persistence_mysql_user != false %>
+mysql:user=<%= @persistence_mysql_user %>
+<% else %>
 #mysql:user=
+<% end %>
 
 # the database password
+<% if @persistence_mysql_password != false %>
+mysql:password=<%= @persistence_mysql_password %>
+<% else %>
 #mysql:password=
+<% end %>
 
 # the reconnection counter
+<% if @persistence_mysql_reconnectCnt != false %>
+mysql:reconnectCnt=<%= @persistence_mysql_reconnectCnt %>
+<% else %>
 #mysql:reconnectCnt=
+<% end %>
+
 
 # the connection timeout (in seconds)
+<% if @persistence_mysql_waitTimeout != false %>
+mysql:waitTimeout=<%= @persistence_mysql_waitTimeout %>
+<% else %>
 #mysql:waitTimeout=
+<% end %>
 
 ############################ Cosm Persistence Service #################################
 #

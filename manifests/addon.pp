@@ -25,4 +25,18 @@ define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab
       }
     }
 
+    #
+    $splitter = split($name, '[.]')
+    #notify { "addonsplit - ${addontype} - ${name}":  }
+    if $splitter[0] == 'persistence'
+    {
+      file {"${splitter[1]}.persist":
+        ensure => present,
+        path   => "${openhab::install_dir}/configurations/persistence/${splitter[1]}.persist",
+        source => "puppet:///modules/openhab/persistence/${splitter[1]}.persist",
+      }
+
+
+    }
+
   }
