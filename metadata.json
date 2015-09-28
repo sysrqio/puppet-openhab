@@ -1,6 +1,6 @@
 {
   "name": "MansM-openhab",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "author": "Mans Matulewicz",
   "summary": "module to install and config openhab, using official packages",
   "license": "Apache-2.0",
@@ -11,7 +11,10 @@
     "openhab"
   ],
   "dependencies": [
-    {"name":"nanliu-archive","version_requirement":">=0.3.0"}
+    {
+      "name": "nanliu-archive",
+      "version_requirement": ">=0.3.0"
+    }
   ],
   "operatingsystem_support": [
     {
