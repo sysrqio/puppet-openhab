@@ -39,7 +39,11 @@ class openhab (
   $version                        = $::openhab::params::version,
   $install_dir                    = $::openhab::params::install_dir,
   $sourceurl                      = $::openhab::params::sourceurl,
+  $personalconfigmodule           = $::openhab::params::personalconfigmodule,
+  $install_java                   = $::openhab::params::install_java,
+
   $security_netmask               = $::openhab::params::security_netmask,
+  $security_netmask_enable        = $::openhab::params::security_netmask_enable,
 
 #denon binding
   $binding_denon_id               = $::openhab::params::binding_denon_id,
@@ -68,6 +72,16 @@ class openhab (
 
     include ::archive
     ensure_packages(['unzip'])
+
+    anchor {'openhab::begin':}
+    anchor {'openhab::end':}
+
+    if $openhab::install_java {
+      Anchor['openhab::begin'] ->
+        Class['java'] ->
+        Service['openhab'] ->
+      Anchor['openhab::end']
+    }
 
     file {'/opt/openhab':
     ensure => directory,
@@ -120,6 +134,31 @@ class openhab (
     require => Archive['openhab-runtime'],
     notify  => Service['openhab'],
 } ->
+
+  file {'openhab-items':
+    ensure  => directory,
+    path    => '/opt/openhab/configurations/items',
+    recurse => 'remote',
+    source  => "puppet:///modules/${personalconfigmodule}/items",
+
+  } ->
+
+  file {'openhab-rules':
+    ensure  => directory,
+    path    => '/opt/openhab/configurations/rules',
+    recurse => 'remote',
+    source  => "puppet:///modules/${personalconfigmodule}/rules",
+
+  } ->
+
+  file {'openhab-sitemaps':
+    ensure  => directory,
+    path    => '/opt/openhab/configurations/sitemaps',
+    recurse => 'remote',
+    source  => "puppet:///modules/${personalconfigmodule}/sitemaps",
+
+  } ->
+
   service {'openhab':
     ensure    => running,
     enable    => true,

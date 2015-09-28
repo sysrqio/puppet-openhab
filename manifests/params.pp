@@ -11,6 +11,9 @@ class openhab::params {
   $version                        = '1.7.1'
   $install_dir                    = '/opt/openhab'
   $sourceurl                      = 'https://bintray.com/artifact/download/openhab/bin'
+  $personalconfigmodule           = 'openhab'
+  $install_java                   = true
+
   $security_netmask_enable        = true
   $security_netmask               = false
 

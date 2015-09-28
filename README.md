@@ -9,10 +9,13 @@
     * [Setup requirements](#setup-requirements)
     * [Beginning with openhab](#beginning-with-openhab)
 4. [Usage - Configuration options and additional functionality](#usage)
+    * [Hiera](#hiera)
+    * [Using your own items/rules/sitemaps/etc](#Using-your-own-items/rules/sitemaps/etc)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
     * [Todo - my todo list](#todo)
+7. [Release notes - whats in the updates](#release-notes)    
 
 ## Overview
 
@@ -30,26 +33,35 @@ too lazy to do a complete reinstall by hand.
 ### What openhab affects
 your household ;-)
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
 I am using plugin sync, not tested it without.
+
 
 ### Beginning with openhab
 
 Get an Rpi with raspbian and use it :-) also normal debian should work,
-java should already be installed. I have done this in my profile 
+java is auto installed by using puppetlabs-java, disable it by setting $install_java  to false.
 
 ## Usage
 
+### Hiera
 My hiera file currenty looks like this:
 ```
 ---
-openhab::security_netmask:      10.0.1.0/24
-openhab::binding_denon_id:      sr7005
-openhab::binding_denon_host:    10.0.1.125
-openhab::binding_denon_update:  telnet
-openhab::binding_mqtt_id:       raspi
-openhab::binding_mqtt_url:      tcp://localhost:1883
+openhab::personalconfigmodule             : openhab-personal
+openhab::security_netmask                 : 10.0.1.0/24
+openhab::binding_denon_id                 : sr7005
+openhab::binding_denon_host               : 10.0.1.125
+openhab::binding_denon_update             : telnet
+openhab::binding_mqtt_id                  : raspi
+openhab::binding_mqtt_url                 : tcp://localhost:1883
+openhab::persistence_mysql_user           : openhab
+openhab::persistence_mysql_password       : openhab
+openhab::persistence_mysql_url            : jdbc:mysql://127.0.0.1:3306/openhab
+openhab::persistence_mysql_waitTimeout    : 30
+openhab::persistence_mysql_reconnectCnt   : 5
+
 openhab_addons:
     binding.mqtt:
         addon_version: "1.7.1"
@@ -60,6 +72,10 @@ openhab_addons:
     io.myopenhab: {}
 ...
 ```
+### Using your own items/rules/sitemaps/etc
+To use your own item/rules/sitemaps/etc files, you need to set the variable openhab::personalconfigmodule. In this
+variable you place the name of the folder name of the module that contains the files. In my case that is openhab-personal.
+In the module directory, you need a directory named files with subdirectories items, rules and sitemaps.
 
 ## Reference
 
@@ -73,14 +89,10 @@ source for a version, you cant have by example 2 different 1.7.1 versions
 ## Development
 
 Currently working on getting all the basics working. For lots of addons I do accept pull requests ;-)
+If you prefer to have me writing the support for an addon, please create an issue on github.
 
 ### Todo
-* support for your own items/rules/sitemaps
 * habmin support
 * fixing the custom facts for myopenhab uuid/secret (can use some help)
 * java is now in a seperate profile for me, but need to mention it somewhere
 * test on centos/etc
-
-## Release Notes/Contributors/Etc **Optional**
-
-* 0.14: support for MySQL persistence
