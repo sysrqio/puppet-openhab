@@ -41,9 +41,14 @@ class openhab (
   $sourceurl                      = $::openhab::params::sourceurl,
   $personalconfigmodule           = $::openhab::params::personalconfigmodule,
   $install_java                   = $::openhab::params::install_java,
+  $install_habmin                 = $::openhab::params::install_habmin,
 
   $security_netmask               = $::openhab::params::security_netmask,
   $security_netmask_enable        = $::openhab::params::security_netmask_enable,
+
+#action pushover
+  $action_pushover_defaulttoken   = $::openhab::params::action_pushover_defaulttoken,
+  $action_pushover_defaultuser    = $::openhab::params::action_pushover_defaultuser,
 
 #denon binding
   $binding_denon_id               = $::openhab::params::binding_denon_id,
@@ -73,12 +78,30 @@ class openhab (
     include ::archive
     ensure_packages(['unzip'])
 
+
     anchor {'openhab::begin':}
     anchor {'openhab::end':}
 
     if $openhab::install_java {
+      include ::java
       Anchor['openhab::begin'] ->
         Class['java'] ->
+        Service['openhab'] ->
+      Anchor['openhab::end']
+    }
+
+    if $openhab::install_habmin {
+        include ::openhab::habmin
+      Anchor['openhab::begin'] ->
+        Class['openhab::habmin'] ->
+        Service['openhab'] ->
+      Anchor['openhab::end']
+    }
+    if $openhab::install_greent {
+        include ::openhab::greent
+      Anchor['openhab::begin'] ->
+        Archive['openhab-runtime']
+        Class['openhab::greent'] ->
         Service['openhab'] ->
       Anchor['openhab::end']
     }
@@ -164,4 +187,5 @@ class openhab (
     enable    => true,
     subscribe => File['openhab.cfg'],
   }
+
 }

@@ -22,6 +22,7 @@ define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab
         extract      => true,
         cleanup      => false,
         extract_path => "${openhab::install_dir}/addons_repo",
+        notify       => Service['openhab'],
       }
     }
 
@@ -31,9 +32,11 @@ define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab
     if $splitter[0] == 'persistence'
     {
       file {"${splitter[1]}.persist":
-        ensure => present,
-        path   => "${openhab::install_dir}/configurations/persistence/${splitter[1]}.persist",
-        source => "puppet:///modules/openhab/persistence/${splitter[1]}.persist",
+        ensure  => present,
+        path    => "${openhab::install_dir}/configurations/persistence/${splitter[1]}.persist",
+        source  => "puppet:///modules/openhab/persistence/${splitter[1]}.persist",
+        require => Archive['openhab-runtime'],
+        notify  => Service['openhab'],
       }
 
 

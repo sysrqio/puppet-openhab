@@ -13,9 +13,15 @@ class openhab::params {
   $sourceurl                      = 'https://bintray.com/artifact/download/openhab/bin'
   $personalconfigmodule           = 'openhab'
   $install_java                   = true
+  $install_habmin                 = true
+  $install_greent                 = true
 
   $security_netmask_enable        = true
   $security_netmask               = false
+
+  ##action pushover
+  $action_pushover_defaulttoken   = false
+  $action_pushover_defaultuser    = false
 
   ##denon binding
   $binding_denon_id               = false

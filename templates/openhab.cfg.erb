@@ -161,11 +161,19 @@ chart:provider=default
 
 # You need to provide a Pushover API token to send to devices. If not here, than during
 # the action call itself.
+<% if @action_pushover_defaulttoken != false %>
+pushover:defaultToken=<%= @action_pushover_defaulttoken %>
+<% else %>
 #pushover:defaultToken=
+<% end %>
 
 # You need to provide a Pushover User Key to send to devices. If not here, than during
 # the action call itself.
+<% if @action_pushover_defaultuser != false %>
+pushover:defaultUser=<%= @action_pushover_defaultuser %>
+<% else %>
 #pushover:defaultUser=
+<% end %>
 
 # Name of the sending application (optional). Defaults to 'openHAB'.
 #pushover:defaultTitle=openHAB
@@ -1156,11 +1164,11 @@ hue:secret=openHABRuntime
 #
 # The Z-Wave controller port. Valid values are e.g. COM1 for Windows and /dev/ttyS0 or
 # /dev/ttyUSB0 for Linux
-#zwave:port=
+zwave:port=/dev/ttyAMA0
 
 # Z-Wave nightly heal time. This is the hour (eg 2AM) at which the automatic nightly
 # network heal will be performed.
-#zwave:healtime=2
+zwave:healtime=2
 
 ################################ Nikobus Binding ######################################
 #
@@ -1885,7 +1893,7 @@ denon:<%= @binding_denon_id %>.update=<%= @binding_denon_update %>
 
 # Optional, this sets the refresh interval (in milliseconds) for all instances
 # if you're using the http connection method. Default = 5000
-#denon:refresh=5000
+denon:refresh=5000
 
 ############################ Frontier Silicon Radio Binding ###########################
 #

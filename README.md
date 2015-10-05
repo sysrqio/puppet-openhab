@@ -14,8 +14,7 @@
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
-    * [Todo - my todo list](#todo)
-7. [Release notes - whats in the updates](#release-notes)    
+    * [Todo - my todo list](#todo)   
 
 ## Overview
 
@@ -35,7 +34,7 @@ your household ;-)
 
 ### Setup Requirements
 
-I am using plugin sync, not tested it without.
+I am using plugin sync, not tested it without. Hiera is REQUIRED!
 
 
 ### Beginning with openhab
@@ -49,18 +48,18 @@ java is auto installed by using puppetlabs-java, disable it by setting $install_
 My hiera file currenty looks like this:
 ```
 ---
-openhab::personalconfigmodule             : openhab-personal
-openhab::security_netmask                 : 10.0.1.0/24
-openhab::binding_denon_id                 : sr7005
-openhab::binding_denon_host               : 10.0.1.125
-openhab::binding_denon_update             : telnet
-openhab::binding_mqtt_id                  : raspi
-openhab::binding_mqtt_url                 : tcp://localhost:1883
-openhab::persistence_mysql_user           : openhab
-openhab::persistence_mysql_password       : openhab
-openhab::persistence_mysql_url            : jdbc:mysql://127.0.0.1:3306/openhab
-openhab::persistence_mysql_waitTimeout    : 30
-openhab::persistence_mysql_reconnectCnt   : 5
+openhab::personalconfigmodule             : 'openhab-personal'
+openhab::security_netmask                 : '10.0.1.0/24'
+openhab::binding_denon_id                 : 'sr7005'
+openhab::binding_denon_host               : '10.0.1.125'
+openhab::binding_denon_update             : 'telnet'
+openhab::binding_mqtt_id                  : 'raspi'
+openhab::binding_mqtt_url                 : 'tcp://localhost:1883'
+openhab::persistence_mysql_user           : 'openhab'
+openhab::persistence_mysql_password       : 'openhab'
+openhab::persistence_mysql_url            : 'jdbc:mysql://127.0.0.1:3306/openhab'
+openhab::persistence_mysql_waitTimeout    : '30'
+openhab::persistence_mysql_reconnectCnt   : '5'
 
 openhab_addons:
     binding.mqtt:
@@ -79,8 +78,38 @@ In the module directory, you need a directory named files with subdirectories it
 
 ## Reference
 
-I use it with the profiles and roles pattern, will post examples in the future
+### Working plugins
 
+#### Action pushover
+Currently only implemented defaultuser and defaulttoken vars.
+Hiera:
+```
+openhab::action_pushover_defaulttoken     : 'findyourtokenonpushoverwebsite'
+openhab::action_pushover_defaultuser      : 'findyouruseronpushoverwebsite'
+```
+in rules you can send a message through pushover with the following code:
+```
+pushover("Laundry machine is finished")
+```
+
+#### binding mqtt
+(I am using it with mqttwarn for sending messages, in the example beneath I use
+it to signal me, the laundrymachine is fisnished)
+Hiera
+```
+openhab::binding_mqtt_id                  : 'raspi'
+openhab::binding_mqtt_url                 : 'tcp://localhost:1883'
+```
+
+Items file for sending a message:
+```
+String mqWas {mqtt=">[raspi:wasmachine/1:state:*:default]"}
+```
+
+in a rule:
+```
+postUpdate(mqWas, "was is klaar")
+```
 ## Limitations
 
 Currently you can use plugins from a different version but you are limited to a single
@@ -92,7 +121,8 @@ Currently working on getting all the basics working. For lots of addons I do acc
 If you prefer to have me writing the support for an addon, please create an issue on github.
 
 ### Todo
-* habmin support
 * fixing the custom facts for myopenhab uuid/secret (can use some help)
-* java is now in a seperate profile for me, but need to mention it somewhere
 * test on centos/etc
+* habmin is installed, but requires zwave addon, without it doesnt work, need to ensure a zwave addon is available
+* lots of modules need their config in the openhab.cfg, so lots of work on the template. Please make issues for requests
+* updating the documentation
