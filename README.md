@@ -126,3 +126,4 @@ If you prefer to have me writing the support for an addon, please create an issu
 * habmin is installed, but requires zwave addon, without it doesnt work, need to ensure a zwave addon is available
 * lots of modules need their config in the openhab.cfg, so lots of work on the template. Please make issues for requests
 * updating the documentation
+* travis-ci and other testing
