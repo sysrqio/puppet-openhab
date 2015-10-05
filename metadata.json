@@ -1,6 +1,6 @@
 {
   "name": "MansM-openhab",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Mans Matulewicz",
   "summary": "module to install and config openhab, using official packages",
   "license": "Apache-2.0",
