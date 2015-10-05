@@ -1,24 +1,14 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-group :test do
-  gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.7.0'
-  gem "rspec", '< 3.2.0'
-  gem "rspec-puppet", :git => 'https://github.com/rodjek/rspec-puppet.git'
-  gem "puppetlabs_spec_helper"
-  gem "metadata-json-lint"
-  gem "rspec-puppet-facts"
-end
+gem 'puppet', ENV['PUPPET_VERSION'] || '>= 3.0', :require => false
 
-group :development do
-  gem "travis"
-  gem "travis-lint"
-  gem "vagrant-wrapper"
-  gem "puppet-blacksmith"
-  gem "guard-rake"
-end
+gem 'rake', :require => false
+gem 'rspec-puppet', '>= 1.0.0', :require => false
+gem 'puppetlabs_spec_helper', '>= 0.8.0', :require => false
+gem 'puppet-lint', '>= 1.1.0', :require => false
+gem 'simplecov', :require => false
+gem 'puppet-blacksmith', '>= 3.0.0', :require => false
+gem 'librarian-puppet', '>= 2.0.0', :require => false
+gem 'beaker-rspec', '>= 3.0.0', :require => false
 
-group :system_tests do
-  gem "beaker"
-  gem "beaker-rspec"
-end
+# vim:ft=ruby
