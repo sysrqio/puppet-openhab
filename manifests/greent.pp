@@ -3,7 +3,7 @@ class openhab::greent
 {
   archive {'greent':
     ensure       => present,
-    path         => "/tmp/distribution-${openhabb::version}-greent.zip",
+    path         => "/tmp/distribution-${openhab::version}-greent.zip",
     source       => "https://bintray.com/artifact/download/openhab/bin/distribution-${openhab::version}-greent.zip",
     creates      => "${openhab::install_dir}/webapps/greent",
     extract      => true,
