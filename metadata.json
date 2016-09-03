@@ -18,6 +18,15 @@
     {
       "name": "puppetlabs-java",
       "version_requirement": ">=1.0.1 <2.0.0"
+    },
+    {
+      "name": "puppetlabs-apt"
+    },
+    {
+      "name": "morpheu-refacter"
+    },
+    {
+      "name": "puppetlabs-stdlib"
     }
   ],
   "operatingsystem_support": [

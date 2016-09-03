@@ -42,9 +42,13 @@ class openhab (
   $personalconfigmodule           = $::openhab::params::personalconfigmodule,
   $install_java                   = $::openhab::params::install_java,
   $install_habmin                 = $::openhab::params::install_habmin,
+  $install_greent                 = $::openhab::params::install_greent,
+  $install_repository             = $::openhab::params::install_repository,
 
   $security_netmask               = $::openhab::params::security_netmask,
   $security_netmask_enable        = $::openhab::params::security_netmask_enable,
+
+  $habmin_url                     = $::openhab::params::habmin_url,
 
 #action pushover
   $action_pushover_defaulttoken   = $::openhab::params::action_pushover_defaulttoken,
@@ -75,9 +79,31 @@ class openhab (
 
   ) inherits ::openhab::params{
 
+    if $openhab::install_repository {
+      case $::operatingsystem {
+        'Debian', 'Ubuntu': {
+          include apt
+					# deb http://dl.bintray.com/openhab/apt-repo stable main
+					apt::source { "openhab-${openhab::version}":
+						comment  => 'This is the Openhab Repository',
+						location => 'http://dl.bintray.com/openhab/apt-repo',
+						release  => 'stable',
+						repos    => 'main',
+						key      => {
+							'id'     => 'EDB7D0304E2FCAF629DF1163075721F6A224060A',
+							'source' => 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab',
+						},
+						include  => {
+							'deb' => true,
+						},
+					}
+        }
+        default : {
+          fail ("Apt not supported on ${::operatingsystem}") }
+      }
+    }
     include ::archive
     ensure_packages(['unzip'])
-
 
     anchor {'openhab::begin':}
     anchor {'openhab::end':}
@@ -106,81 +132,87 @@ class openhab (
       Anchor['openhab::end']
     }
 
-    file {'/opt/openhab':
-    ensure => directory,
-    path   => '/opt/openhab',
-  } ->
-  archive {'openhab-runtime':
-    ensure       => present,
-    path         => "/tmp/distribution-${version}-runtime.zip",
-    source       => "${sourceurl}/distribution-${version}-runtime.zip",
-    creates      => "${install_dir}/server/plugins/org.openhab.core_${version}.jar",
-    extract      => true,
-    cleanup      => false,
-    extract_path => $install_dir,
-    require      => Package['unzip'],
-  } ->
-  file {"${install_dir}/addons_repo":
-  ensure => directory,
-  path   => '/opt/openhab/addons_repo',
-}
+	if $::openhab::install_repository {
+		package {'openhab-runtime':
+			ensure => $::openhab::version,
+		}
+	} else {
+		file {'/opt/openhab':
+			ensure => directory,
+			path   => '/opt/openhab',
+		}
+		archive {'openhab-runtime':
+			ensure       => present,
+			path         => "/tmp/distribution-${version}-runtime.zip",
+			source       => "${sourceurl}/distribution-${version}-runtime.zip",
+			creates      => "${install_dir}/server/plugins/org.openhab.core_${version}.jar",
+			extract      => true,
+			cleanup      => false,
+			extract_path => $install_dir,
+			require      => [File['/opt/openhab'], Package['unzip']],
+		}
+		file {"${install_dir}/addons_repo":
+			ensure  => directory,
+			path		=> '/opt/openhab/addons_repo',
+			require => Archive['openhab-runtime'],
+		}
+		archive {"openhab-addons-${version}":
+			ensure       => present,
+			path				 => "/tmp/distribution-${version}-addons.zip",
+			source       => "${sourceurl}/distribution-${version}-addons.zip",
+			creates      => "${install_dir}/addons_repo/org.openhab.io.myopenhab-${version}.jar",
+			extract      => true,
+			cleanup      => false,
+			extract_path => "${install_dir}/addons_repo",
+			require			 => File["${install_dir}/addons_repo"],
+		}
+    file {'openhab.initd':
+      ensure  => present,
+      path    => '/etc/init.d/openhab',
+      mode    => '0755',
+      source  => 'puppet:///modules/openhab/openhab.initd',
+      require => Archive['openhab-runtime'],
+    }
+	}
 
-  archive {"openhab-addons-${version}":
-    ensure       => present,
-    path         => "/tmp/distribution-${version}-addons.zip",
-    source       => "${sourceurl}/distribution-${version}-addons.zip",
-    creates      => "${install_dir}/addons_repo/org.openhab.io.myopenhab-${version}.jar",
-    extract      => true,
-    cleanup      => false,
-    extract_path => "${install_dir}/addons_repo",
+  user { 'openhab':
+    ensure  => present,
+    groups  => [ 'dialout' ],
+    require => $::openhab::install_repository ? { true => Package['openhab-runtime'], false =>  Archive['openhab-runtime'] },
   }
 
   $addons = hiera('openhab_addons', {})
   create_resources('addon', $addons)
 
-  file {'openhab.initd':
-    ensure => present,
-    path   => '/etc/init.d/openhab',
-    mode   => '0755',
-    source => 'puppet:///modules/openhab/openhab.initd',
-  } ->
-
-  user { 'openhab':
-      ensure  => present,
-      groups  => [ 'dialout' ],
-      require => Archive['openhab-runtime'],
-    } ->
+  
+	if !$::openhab::install_repository {
+    file {'openhab-items':
+      ensure  => directory,
+      path    => '/opt/openhab/configurations/items',
+      recurse => 'remote',
+      source  => "puppet:///modules/${personalconfigmodule}/items",
+    }
+    file {'openhab-rules':
+      ensure  => directory,
+      path    => '/opt/openhab/configurations/rules',
+      recurse => 'remote',
+      source  => "puppet:///modules/${personalconfigmodule}/rules",
+    }
+    file {'openhab-sitemaps':
+      ensure  => directory,
+      path    => '/opt/openhab/configurations/sitemaps',
+      recurse => 'remote',
+      source  => "puppet:///modules/${personalconfigmodule}/sitemaps",
+    }
+  }
+  
   file  {'openhab.cfg':
     ensure  => present,
     path    => "${install_dir}/configurations/openhab.cfg",
     content => template('openhab/openhab.cfg.erb'),
-    require => Archive['openhab-runtime'],
+    require => $::openhab::install_repository ? { true => Package['openhab-runtime'], false => Archive['openhab-runtime'] },
     notify  => Service['openhab'],
-} ->
-
-  file {'openhab-items':
-    ensure  => directory,
-    path    => '/opt/openhab/configurations/items',
-    recurse => 'remote',
-    source  => "puppet:///modules/${personalconfigmodule}/items",
-
-  } ->
-
-  file {'openhab-rules':
-    ensure  => directory,
-    path    => '/opt/openhab/configurations/rules',
-    recurse => 'remote',
-    source  => "puppet:///modules/${personalconfigmodule}/rules",
-
-  } ->
-
-  file {'openhab-sitemaps':
-    ensure  => directory,
-    path    => '/opt/openhab/configurations/sitemaps',
-    recurse => 'remote',
-    source  => "puppet:///modules/${personalconfigmodule}/sitemaps",
-
-  } ->
+  }
 
   service {'openhab':
     ensure    => running,

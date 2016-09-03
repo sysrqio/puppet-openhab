@@ -3,6 +3,12 @@
 #
 define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab::sourceurl) {
 
+  if $::openhab::install_repository {
+    package {"openhab-addon-${name}":
+      ensure  => $::openhab::version,
+      require => Package['openhab-runtime'],
+    }
+  } else {
     file {"org.openhab.${name}-${addon_version}.jar":
       ensure  => present,
       path    => "${openhab::install_dir}/addons/org.openhab.${name}-${addon_version}.jar",
@@ -43,3 +49,4 @@ define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab
     }
 
   }
+}

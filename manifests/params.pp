@@ -15,9 +15,12 @@ class openhab::params {
   $install_java                   = true
   $install_habmin                 = true
   $install_greent                 = true
+  $install_repository             = false
 
   $security_netmask_enable        = true
   $security_netmask               = false
+
+  $habmin_url                     = 'https://github.com/cdjackson/HABmin/archive/master.zip'
 
   ##action pushover
   $action_pushover_defaulttoken   = false
