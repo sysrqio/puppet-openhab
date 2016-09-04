@@ -41,6 +41,7 @@ I am using plugin sync, not tested it without. Hiera is REQUIRED!
 
 Get an Rpi with raspbian and use it :-) also normal debian should work,
 java is auto installed by using puppetlabs-java, disable it by setting $install_java  to false.
+The plugin does not support oracle java on RaspberryPi. Oracle java is recommended for Openhab.
 
 ## Usage
 
@@ -274,6 +275,41 @@ source for a version, you cant have by example 2 different 1.7.1 versions
 
 Currently working on getting all the basics working. For lots of addons I do accept pull requests ;-)
 If you prefer to have me writing the support for an addon, please create an issue on github.
+
+### How to add new addons
+
+In order to add new addons you need to create a template snippet like openhab-addon-[binding|action|io|persistence]-ADDONNAME-VERSION.cfg.erb
+This is automatically concated when configuration data is set using hiera.
+Hiera
+```
+openhab_addons:
+   persistence-mypersistence:
+       configuration:
+           host                    : 'localhost'
+           database                : 'openhab'
+           my_array:
+             - id                  : '1'
+               name                : 'name1'
+             - id                  : '2'
+               name                : 'name2'
+```
+In the template you can use @configuration to access the data.
+
+```
+mypersistence:url=mypersistence://<%= @configuration['host'] -%>/<%= @configuration['database'] %>
+# Creates:
+#mypersistence:url=mypersistence://localhost/openhab
+
+# Array Example
+<% @configuration['my_array'].each do |data| -%>
+mypersistence:<%= data['id'] -%>.name=<%= data['name'] %>
+<% end -%>
+
+# Creates:
+mypersistence:1.name=name1
+mypersistence:2.name=name2
+
+```
 
 ### Todo
 * test on centos/etc
