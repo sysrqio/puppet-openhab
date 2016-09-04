@@ -1,0 +1,32 @@
+
+############################ SQL Persistence Service ##################################
+# the database url like 'jdbc:mysql://<host>:<port>/<database>' (without quotes)
+#mysql:url=
+<% if @configuration['url'] -%>
+mysql:url=<%= @configuration['url']%>
+<% end -%>
+
+# the database user
+#mysql:user=
+<% if @configuration['user'] -%>
+mysql:user=<%= @configuration['user']%>
+<% end -%>
+
+# the database password
+#mysql:password=
+<% if @configuration['password'] -%>
+mysql:password=<%= @configuration['password']%>
+<% end -%>
+
+# the reconnection counter
+#mysql:reconnectCnt=
+<% if @configuration['reconnectcnt'] -%>
+mysql:reconnectCnt=<%= @configuration['reconnectcnt']%>
+<% end -%>
+
+# the connection timeout (in seconds)
+#mysql:waitTimeout=
+<% if @configuration['waittimeout'] -%>
+mysql:waitTimeout=<%= @configuration['waittimeout']%>
+<% end -%>
+

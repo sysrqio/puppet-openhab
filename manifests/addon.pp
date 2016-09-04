@@ -1,12 +1,19 @@
 #class open:addons
 # == Define: define_name
 #
-define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab::sourceurl) {
+define openhab::addon ($addon_version = $openhab::version, $sourceurl = $openhab::sourceurl, $configuration = undef) {
 
   if $::openhab::install_repository {
     package {"openhab-addon-${name}":
       ensure  => $::openhab::version,
       require => Package['openhab-runtime'],
+    }
+    if $configuration != undef {
+      concat::fragment { "openhab-addon-${name}-${::openhab::version}":
+        target  => "${::openhab::install_dir}/configurations/openhab.cfg",
+        content => template("openhab/openhab-addon-${name}-${::openhab::version}.cfg.erb"),
+        require => Package["openhab-addon-${name}"],
+      }
     }
   } else {
     file {"org.openhab.${name}-${addon_version}.jar":

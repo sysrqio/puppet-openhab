@@ -1,0 +1,21 @@
+################################ Sonos Binding ########################################
+#
+#Add a line for each Sonos device you want to pre-define
+#The format is <name>.udn=<RINCON UID>
+#
+#sonos:office.udn=RINCON_000XXXXXXXXX01400
+#sonos:living.udn=RINCON_000YYYYYYYYY01400
+
+<% @configuration['hosts'].each do |conf| -%>
+<% if conf['host'] && conf['rinconuid'] -%>
+sonos:<%= conf['host'] -%>.udn=<%= conf['rinconuid'] -%>
+<% end -%>
+<% end -%>
+
+#Interval, in milliseconds, to poll the Sonos devices for status variables
+#sonos:pollingPeriod=1000
+
+<% if @configuration['pollingperiod'] -%>
+sonos:pollingPeriod=<%= @configuration['pollingperiod']-%>
+<% end -%>
+

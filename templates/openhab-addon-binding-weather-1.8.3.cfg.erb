@@ -1,0 +1,48 @@
+################################### Weather Binding ###################################
+#
+# The apikey values for the different weather providers
+# Note: Hamweather requires two apikeys: client_id=apikey, client_secret=apikey2
+#weather:apikey.ForecastIo=
+#weather:apikey.OpenWeatherMap=
+#weather:apikey.WorldWeatherOnline=
+#weather:apikey.Wunderground=
+#weather:apikey.Hamweather=
+#weather:apikey2.Hamweather=
+
+<% if @configuration['apikeys'] -%>
+<% @configuration['apikeys'].each do |apikey| -%>
+weather:apikey.<%= apikey['provider'] -%>=<%= apikey['key'] %>
+<% end -%>
+<% end -%>
+
+# location configuration, you can specify multiple locations
+# Note: latitude and longitude are NOT required for Yahoo
+#       woeid is ONLY required for Yahoo
+#weather:location.<locationId1>.name=
+#weather:location.<locationId1>.latitude=
+#weather:location.<locationId1>.longitude=
+#weather:location.<locationId1>.woeid=
+#weather:location.<locationId1>.provider=
+#weather:location.<locationId1>.language=
+#weather:location.<locationId1>.updateInterval=
+
+#weather:location.<locationId2>.name=
+#weather:location.<locationId2>.latitude=
+#weather:location.<locationId2>.longitude=
+#weather:location.<locationId2>.woeid=
+#weather:location.<locationId2>.provider=
+#weather:location.<locationId2>.language=
+#weather:location.<locationId2>.updateInterval=
+
+<% @configuration['locations'].each do |location| -%>
+<% if location['id'] && location['name'] -%>
+weather:location.<%= location['id'] -%>.name=<%= location['name'] %>
+weather:location.<%= location['id'] -%>.latitude=<%= location['latitude'] %>
+weather:location.<%= location['id'] -%>.longitude=<%= location['longitude'] %>
+weather:location.<%= location['id'] -%>.woeid=<%= location['woeid'] %>
+weather:location.<%= location['id'] -%>.provider=<%= location['provider'] %>
+weather:location.<%= location['id'] -%>.language=<%= location['language'] %>
+weather:location.<%= location['id'] -%>.updateInterval=<%= location['updateinterval'] %>
+<% end -%>
+<% end -%>
+

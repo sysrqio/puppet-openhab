@@ -1,0 +1,21 @@
+################################# Astro Binding #######################################
+#
+# The latitude
+#astro:latitude=
+<% if @configuration['latitude'] -%>
+astro:latitude=<%= @configuration['latitude'] %>
+<% end -%>
+
+# The longitude
+#astro:longitude=
+<% if @configuration['longitude'] -%>
+astro:longitude=<%= @configuration['longitude'] %>
+<% end -%>
+
+# Refresh interval for azimuth and elevation calculation in seconds
+# (optional, defaults to disabled)
+#astro:interval=
+<% if @configuration['interval'] -%>
+astro:interval=<%= @configuration['interval'] %>
+<% end -%>
+

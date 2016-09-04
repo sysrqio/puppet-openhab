@@ -1,0 +1,71 @@
+# This is the default configuration file, which comes with every openHAB distribution.
+# You should do a copy of it with the name 'openhab.cfg' and configure your personal
+# settings in there. This way you can be sure that they are not overwritten, if you
+# update openHAB one day.
+
+
+#######################################################################################
+#####                        General configurations                               #####
+#######################################################################################
+
+# Configuration folders (must exist as a subdirectory of "configurations"; the value
+# tells the number of seconds for the next scan of the directory for changes. A
+# value of -1 deactivates the scan).
+# A comma separated list can follow after the refresh value. This list defines a filter
+# for valid file extensions for the models.
+folder:items=10,items
+folder:sitemaps=10,sitemap
+folder:rules=10,rules
+folder:scripts=10,script
+folder:persistence=10,persist
+
+# configures the security options. The following values are valid:
+# ON = security is switched on generally
+# OFF = security is switched off generally
+# EXTERNAL = security is switched on for external requests
+#            (e.g. originating from the Internet) only
+# (optional, defaults to 'OFF')
+#security:option=
+
+# the Netmask to define a range of internal IP-Addresses which doesn't require
+# authorization (optional, defaults to '192.168.1.0/24')
+<% if @configuration['security_netmask'] -%>
+security:netmask=<%= @configuration['security_netmask'] %>
+<% else -%>
+#security:netmask=
+<% end -%>
+
+# The name of the default persistence service to use
+<% if @configuration['persistence_default'] -%>
+persistence:default=<%= @configuration['persistence_default'] %>
+<% else -%>
+persistence:default=rrd4j
+<% end -%>
+
+# The refresh interval for the main configuration file. A value of '-1'
+# deactivates the scan (optional, defaults to '-1' hence scanning is deactivated)
+#mainconfig:refresh=
+
+# Bind service discovery to specific hostname or IP address
+#servicediscovery:bind_address=127.0.0.1
+
+################################## Chart Servlet ######################################
+#
+# This section defines the configuration for the chart servlet.
+chart:provider=default
+
+#
+# Set the default height of a chart if the client doesn't provide this in the request
+# defaults to 240
+#chart:defaultHeight=240
+
+#
+# Set the default width of a chart if the client doesn't provide this in the request
+# defaults to 480
+#chart:defaultWidth=480
+
+#
+# Set a scale factor. This is used if the client sets the size in the request.
+# defaults to 1 (ie no scaling)
+#chart:scale=1
+

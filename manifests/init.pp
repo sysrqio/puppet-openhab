@@ -50,33 +50,7 @@ class openhab (
 
   $habmin_url                     = $::openhab::params::habmin_url,
 
-#action pushover
-  $action_pushover_defaulttoken   = $::openhab::params::action_pushover_defaulttoken,
-  $action_pushover_defaultuser    = $::openhab::params::action_pushover_defaultuser,
-
-#denon binding
-  $binding_denon_id               = $::openhab::params::binding_denon_id,
-  $binding_denon_host             = $::openhab::params::binding_denon_host,
-  $binding_denon_update           = $::openhab::params::binding_denon_update,
-
-#mosquitto binding
-  $binding_mqtt_id                = $::openhab::params::binding_mqtt_id,
-  $binding_mqtt_url               = $::openhab::params::binding_mqtt_url,
-  $binding_mqtt_clientId          = $::openhab::params::binding_mqtt_clientId, #todo-opt
-  $binding_mqtt_user              = $::openhab::params::binding_mqtt_user, #todo-opt
-  $binding_mqtt_password          = $::openhab::params::binding_mqtt_password, #todo-opt
-  $binding_mqtt_qos               = $::openhab::params::binding_mqtt_qos, #todo-opt
-  $binding_mqtt_retain            = $::openhab::params::binding_mqtt_retain, #todo-opt
-  $binding_mqtt_async             = $::openhab::params::binding_mqtt_async, #todo-opt
-  $binding_mqtt_lwt               = $::openhab::params::binding_mqtt_lwt, #todo-opt
-
-#persistence mysql
-  $persistence_mysql_url          = $::openhab::params::mysql_url,
-  $persistence_mysql_user         = $::openhab::params::mysql_user,
-  $persistence_mysql_password     = $::openhab::params::mysql_password,
-  $persistence_mysql_reconnectCnt = $::openhab::params::mysql_reconnectCnt,
-  $persistence_mysql_waitTimeout  = $::openhab::params::mysql_waitTimeout,
-
+  $configuration                  = $::openhab::params::configuration,
   ) inherits ::openhab::params{
 
     if $openhab::install_repository {
@@ -206,18 +180,24 @@ class openhab (
     }
   }
   
-  file  {'openhab.cfg':
+  concat { "${install_dir}/configurations/openhab.cfg":
     ensure  => present,
-    path    => "${install_dir}/configurations/openhab.cfg",
-    content => template('openhab/openhab.cfg.erb'),
+    owner   => 'openhab',
+    group   => 'openhab',
     require => $::openhab::install_repository ? { true => Package['openhab-runtime'], false => Archive['openhab-runtime'] },
     notify  => Service['openhab'],
+  }
+
+  concat::fragment { "openhab-runtime-${::openhab::version}":
+    target  => "${::openhab::install_dir}/configurations/openhab.cfg",
+    content => template("openhab/openhab-runtime-${::openhab::version}.cfg.erb"),
+    order   => '01'
   }
 
   service {'openhab':
     ensure    => running,
     enable    => true,
-    subscribe => File['openhab.cfg'],
+    subscribe => File["${install_dir}/configurations/openhab.cfg"],
   }
 
 }

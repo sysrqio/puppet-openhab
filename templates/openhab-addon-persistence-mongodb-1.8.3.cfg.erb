@@ -1,0 +1,20 @@
+############################ MongoDB Persistence Service ##################################
+#
+# the database URL, e.g. mongodb://127.0.0.1:27017
+#mongodb:url=mongodb://127.0.0.1:27017
+<% if @configuration['url'] -%>
+mongodb:url=<%= @configuration['url'] %>
+<% end -%>
+
+# the database name
+#mongodb:database=openhab
+<% if @configuration['database'] -%>
+mongodb:database=<%= @configuration['database'] %>
+<% end -%>
+
+# the collection name
+#mongodb:collection=openhab
+<% if @configuration['collection'] -%>
+mongodb:collection=<%= @configuration['collection'] %>
+<% end -%>
+

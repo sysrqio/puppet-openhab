@@ -1,0 +1,15 @@
+################################ NTP Binding ##########################################
+#
+# refresh interval in milliseconds (optional, defaults to 900000 [15 minutes])
+#ntp:refresh=
+<% if @configuration['refresh'] -%>
+ntp:refresh=<%= @configuration['refresh'] %>
+<% end -%>
+
+# the hostname of the timeserver
+<% if @configuration['hostname'] -%>
+ntp:hostname=<%= @configuration['hostname'] %>
+<% else -%>
+ntp:hostname=ptbtime1.ptb.de
+<% end -%>
+
