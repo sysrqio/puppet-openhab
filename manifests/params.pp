@@ -12,6 +12,7 @@ class openhab::params {
   $install_dir                    = '/opt/openhab'
   $sourceurl                      = 'https://bintray.com/artifact/download/openhab/bin'
   $personalconfigmodule           = 'openhab'
+  $personalconfigvcs              = undef
   $install_java                   = true
   $install_habmin                 = true
   $install_greent                 = true

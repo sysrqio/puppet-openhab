@@ -40,6 +40,7 @@ class openhab (
   $install_dir                    = $::openhab::params::install_dir,
   $sourceurl                      = $::openhab::params::sourceurl,
   $personalconfigmodule           = $::openhab::params::personalconfigmodule,
+  $personalconfigvcs              = $::openhab::params::personalconfigvcs,
   $install_java                   = $::openhab::params::install_java,
   $install_habmin                 = $::openhab::params::install_habmin,
   $install_greent                 = $::openhab::params::install_greent,
@@ -161,22 +162,72 @@ class openhab (
   create_resources('addon', $addons)
 
   
-	if !$::openhab::install_repository {
+  if $::openhab::personalconfigvcs {
+		vcsrepo { $::openhab::personalconfigvcs['repopath']:
+			ensure   => present,
+			provider => $::openhab::personalconfigvcs['provider'],
+			source   => $::openhab::personalconfigvcs['url'],
+			revision => $::openhab::personalconfigvcs['branch'],
+		}
+    file {'openhab-items':
+      ensure  => link,
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/items", 
+                                                    false => "/opt/openhab/configurations/items" },
+      force   => true,
+      target  => "${::openhab::personalconfigvcs['repopath']}/items",
+      require => Vcsrepo[$::openhab::personalconfigvcs['repopath']],
+    }
+    file {'openhab-rules':
+      ensure  => link,
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/rules", 
+                                                    false => "/opt/openhab/configurations/rules" },
+      force   => true,
+      target  => "${::openhab::personalconfigvcs['repopath']}/rules",
+      require => Vcsrepo[$::openhab::personalconfigvcs['repopath']],
+    }
+    file {'openhab-sitemaps':
+      ensure  => link,
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/sitemaps", 
+                                                    false => "/opt/openhab/configurations/sitemaps" },
+      force   => true,
+      target  => "${::openhab::personalconfigvcs['repopath']}/sitemaps",
+      require => Vcsrepo[$::openhab::personalconfigvcs['repopath']],
+    }
+    file {'openhab-persistence':
+      ensure  => link,
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/persistence", 
+                                                    false => "/opt/openhab/configurations/persistence" },
+      force   => true,
+      target  => "${::openhab::personalconfigvcs['repopath']}/persistence",
+      require => Vcsrepo[$::openhab::personalconfigvcs['repopath']],
+    }
+    file {'openhab-transform':
+      ensure  => link,
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/transform", 
+                                                    false => "/opt/openhab/configurations/transform" },
+      force   => true,
+      target  => "${::openhab::personalconfigvcs['repopath']}/transform",
+      require => Vcsrepo[$::openhab::personalconfigvcs['repopath']],
+    }
+  } elsif $::openhab::personalconfigmodule {
     file {'openhab-items':
       ensure  => directory,
-      path    => '/opt/openhab/configurations/items',
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/items", 
+                                                    false => "/opt/openhab/configurations/items" },
       recurse => 'remote',
       source  => "puppet:///modules/${personalconfigmodule}/items",
     }
     file {'openhab-rules':
       ensure  => directory,
-      path    => '/opt/openhab/configurations/rules',
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/rules", 
+                                                    false => "/opt/openhab/configurations/rules" },
       recurse => 'remote',
       source  => "puppet:///modules/${personalconfigmodule}/rules",
     }
     file {'openhab-sitemaps':
       ensure  => directory,
-      path    => '/opt/openhab/configurations/sitemaps',
+      path    => $::openhab::install_repository ? { true => "${::openhab::install_dir}/configurations/sitemaps", 
+                                                    false => "/opt/openhab/configurations/sitemaps" },
       recurse => 'remote',
       source  => "puppet:///modules/${personalconfigmodule}/sitemaps",
     }

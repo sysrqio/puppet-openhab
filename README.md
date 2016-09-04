@@ -11,6 +11,7 @@
 4. [Usage - Configuration options and additional functionality](#usage)
     * [Hiera](#hiera)
     * [Using your own items/rules/sitemaps/etc](#Using-your-own-items/rules/sitemaps/etc)
+    * [Change logging settings](#Change-logging-settings)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
@@ -102,6 +103,16 @@ openhab_addons:
 To use your own item/rules/sitemaps/etc files, you need to set the variable openhab::personalconfigmodule. In this
 variable you place the name of the folder name of the module that contains the files. In my case that is openhab-personal.
 In the module directory, you need a directory named files with subdirectories items, rules and sitemaps.
+
+An alternative is to use the variable openhab::personalconfigvcs. Using this fetches the data from a remote respository like 
+git and creates symlinks from the configurations folder. To use this set in hiera:
+```
+openhab::personalconfigvcs:
+    provider: 'git'
+    branch: 'master'
+    url: 'git@host:repository.git'
+    repopath: '/etc/openhab/configurations.git'
+```
 
 ### Change logging settings
 In this example the logging settings of openhab are set to rotate the file logs each day and keep seven archives.
