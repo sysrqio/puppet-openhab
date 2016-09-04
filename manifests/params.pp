@@ -19,6 +19,35 @@ class openhab::params {
 
   $habmin_url                     = 'https://github.com/cdjackson/HABmin/archive/master.zip'
 
+  $logging                        = {
+                                        'openhab' => {
+                                                        'enabled'          => true,
+                                                        'logname'          => 'FILE',
+                                                        'history'          => '30',
+                                                        'rollover_pattern' => 'yyyy-ww',
+                                                        'levels'           => [ 'WARN' ],
+                                        },
+                                        'stdout'  => {
+                                                        'enabled'          => true,
+                                                        'logname'          => 'STDOUT',
+                                                        'levels'           => [ 'WARN' ],
+                                        },
+                                        'syslog'  => {
+                                                        'enabled'          => false,
+                                                        'logname'          => 'SYSLOG',
+                                                        'host'             => undef,
+                                                        'facility'         => undef,
+                                                        'logpattern'       => undef,
+                                                        'levels'           => [ 'WARN' ],
+                                        },
+                                        'events'  => {
+                                                        'enabled'          => true,
+                                                        'logname'          => 'EVENTFILE',
+                                                        'history'          => '30',
+                                                        'rollover_pattern' => 'yyyy-ww',
+                                        },
+                                    }
+
   $configuration                  = undef
 
 }

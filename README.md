@@ -103,6 +103,40 @@ To use your own item/rules/sitemaps/etc files, you need to set the variable open
 variable you place the name of the folder name of the module that contains the files. In my case that is openhab-personal.
 In the module directory, you need a directory named files with subdirectories items, rules and sitemaps.
 
+### Change logging settings
+In this example the logging settings of openhab are set to rotate the file logs each day and keep seven archives.
+WARN is logged to the openhab.log and to stdout. INFO is logged additionally to a remote syslog server.
+
+Hiera:
+```
+openhab::logging:
+    openhab:
+        logname: 'FILE'
+        enabled: true
+        history: 7
+        rollover_pattern: 'yyyy-MM-dd'
+        levels:
+            - 'WARN'
+    events:
+        logname: 'EVENTFILE'
+        enabled: true
+        history: 7
+        rollover_pattern: 'yyyy-MM-dd'
+    stdout:
+        enabled: true
+        logname: 'STDOUT'
+        levels:
+            - 'WARN'
+    syslog:
+        enabled: true
+        logname: 'SYSLOG'
+        host: '10.0.1.1'
+        facility: 'LOCAL6'
+        logpattern: '{}openhab: [%thread] %logger %msg'
+        levels:
+            - 'INFO'
+```
+
 ## Reference
 
 ### Working plugins

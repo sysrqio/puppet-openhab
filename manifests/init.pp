@@ -50,6 +50,8 @@ class openhab (
 
   $habmin_url                     = $::openhab::params::habmin_url,
 
+  $logging                        = $::openhab::params::logging,
+
   $configuration                  = $::openhab::params::configuration,
   ) inherits ::openhab::params{
 
@@ -192,6 +194,13 @@ class openhab (
     target  => "${::openhab::install_dir}/configurations/openhab.cfg",
     content => template("openhab/openhab-runtime-${::openhab::version}.cfg.erb"),
     order   => '01'
+  }
+
+  file { "${install_dir}/logback.xml":
+    ensure  => present,
+    content => template("openhab/logback.xml.erb"),
+    require => $::openhab::install_repository ? { true => Package['openhab-runtime'], false => Archive['openhab-runtime'] },
+    notify  => Service['openhab'],
   }
 
   service {'openhab':
