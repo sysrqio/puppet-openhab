@@ -6,7 +6,7 @@
 #denon:avr2000.host=192.168.1.70
 <% @configuration['hosts'].each do |conf| -%>
 <% if conf['host'] && conf['ip'] -%>
-denon:<%= conf['host'] -%>.host=<%= conf['ip'] -%>
+denon:<%= conf['host'] -%>.host=<%= conf['ip'] %>
 <% end -%>
 <% end -%>
 
@@ -16,7 +16,7 @@ denon:<%= conf['host'] -%>.host=<%= conf['ip'] -%>
 #denon:avr2000.update=telnet
 <% @configuration['hosts'].each do |conf| -%>
 <% if conf['host'] && conf['update'] -%>
-denon:<%= conf['host'] -%>.update=<%= conf['update'] -%>
+denon:<%= conf['host'] -%>.update=<%= conf['update'] %>
 <% end -%>
 <% end -%>
 
@@ -24,6 +24,6 @@ denon:<%= conf['host'] -%>.update=<%= conf['update'] -%>
 # if you're using the http connection method. Default = 5000
 #denon:refresh=5000
 <% if @configuration['update'] -%>
-denon:refresh=<%= @configuration['update'] -%>
+denon:refresh=<%= @configuration['update'] %>
 <% end -%>
 

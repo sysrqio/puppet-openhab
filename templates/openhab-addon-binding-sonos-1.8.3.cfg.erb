@@ -8,7 +8,7 @@
 
 <% @configuration['hosts'].each do |conf| -%>
 <% if conf['host'] && conf['rinconuid'] -%>
-sonos:<%= conf['host'] -%>.udn=<%= conf['rinconuid'] -%>
+sonos:<%= conf['host'] -%>.udn=<%= conf['rinconuid'] %>
 <% end -%>
 <% end -%>
 
@@ -16,6 +16,6 @@ sonos:<%= conf['host'] -%>.udn=<%= conf['rinconuid'] -%>
 #sonos:pollingPeriod=1000
 
 <% if @configuration['pollingperiod'] -%>
-sonos:pollingPeriod=<%= @configuration['pollingperiod']-%>
+sonos:pollingPeriod=<%= @configuration['pollingperiod'] %>
 <% end -%>
 

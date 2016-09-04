@@ -3,14 +3,14 @@
 # timeout in milliseconds for the http requests (optional, defaults to 5000)
 #http:timeout=
 <% if @configuration['timeout'] -%>
-http:timeout=<%= @configuration['timeout'] -%>
+http:timeout=<%= @configuration['timeout'] %>
 <% end -%>
 
 # the interval in milliseconds when to find new refresh candidates
 # (optional, defaults to 1000)
 #http:granularity=
 <% if @configuration['granularity'] -%>
-http:granularity=<%= @configuration['granularity'] -%>
+http:granularity=<%= @configuration['granularity'] %>
 <% end -%>
 
 # configuration of the first cache item
@@ -19,7 +19,7 @@ http:granularity=<%= @configuration['granularity'] -%>
 
 <% @configuration['caches'].each do |cache| -%>
 <% if cache['url'] && cache['updateinterval'] -%>
-http:<%= cache['name'] -%>.url=<%= cache['url'] -%>
-http:<%= cache['name'] -%>.updateInterval=<%= cache['updateinterval'] -%>
+http:<%= cache['name'] -%>.url=<%= cache['url'] %>
+http:<%= cache['name'] -%>.updateInterval=<%= cache['updateinterval'] %>
 <% end -%>
 <% end -%>
