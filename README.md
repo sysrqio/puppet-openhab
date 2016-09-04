@@ -48,27 +48,53 @@ java is auto installed by using puppetlabs-java, disable it by setting $install_
 My hiera file currenty looks like this:
 ```
 ---
-openhab::personalconfigmodule             : 'openhab-personal'
-openhab::security_netmask                 : '10.0.1.0/24'
-openhab::binding_denon_id                 : 'sr7005'
-openhab::binding_denon_host               : '10.0.1.125'
-openhab::binding_denon_update             : 'telnet'
-openhab::binding_mqtt_id                  : 'raspi'
-openhab::binding_mqtt_url                 : 'tcp://localhost:1883'
-openhab::persistence_mysql_user           : 'openhab'
-openhab::persistence_mysql_password       : 'openhab'
-openhab::persistence_mysql_url            : 'jdbc:mysql://127.0.0.1:3306/openhab'
-openhab::persistence_mysql_waitTimeout    : '30'
-openhab::persistence_mysql_reconnectCnt   : '5'
+
+openhab::personalconfigmodule     : 'openhab-personal'
+openhab::version                  : '1.8.3'
+openhab::install_java             : false
+openhab::install_repository       : true
+openhab::install_habmin           : true
+openhab::install_greent           : false
+openhab::install_dir              : '/etc/openhab'
+openhab::install_dir              : '/etc/openhab'
+openhab::configuration:
+    security_netmask              : '10.0.1.0/24'
+    persistence_default           : 'rrd4j'
+
 
 openhab_addons:
-    binding.mqtt:
-        addon_version: "1.7.1"
-    binding.denon:
-        addon_version: "1.8.0-SNAPSHOT"
-        sourceurl:     "https://openhab.ci.cloudbees.com/job/openHAB/lastSuccessfulBuild/artifact/distribution/target/"
-    binding.zwave: {}
-    io.myopenhab: {}
+  binding-zwave:
+      configuration:
+          port                    : '/dev/ttyUSB0'
+          healtime                : 2
+          mastercontroller        : true
+          setsuc                  : false
+          softreset               : false
+  io-myopenhab: {}
+  binding-http:
+      configuration:
+          timeout                 : 500
+          caches: []
+  binding-sonos:
+      configuration:
+          pollingperiod           : 1000
+          hosts:
+              - host              : 'kueche'
+                rinconuid         : 'RINCON_1234567890'
+  persistence-mysql:
+      configuration:
+          url                     : 'jdbc:mysql://127.0.0.1:3306/openhab'
+          user                    : 'openhab'
+          password                : 'openhab'
+          waittimeout             : '30'
+          reconnectcnt            : '5'
+  binding-denon:
+      configuration:
+        update                    : 5000
+        hosts:
+            - host                : 'sr7005'
+              ip                  : '10.0.1.125'
+              update              : 'telnet'
 ...
 ```
 ### Using your own items/rules/sitemaps/etc
@@ -84,21 +110,35 @@ In the module directory, you need a directory named files with subdirectories it
 Currently only implemented defaultuser and defaulttoken vars.
 Hiera:
 ```
-openhab::action_pushover_defaulttoken     : 'findyourtokenonpushoverwebsite'
-openhab::action_pushover_defaultuser      : 'findyouruseronpushoverwebsite'
+openhab_addons:
+  action-pushover:
+      configuration:
+          defaulttimeout          : 10000
+          defaulttoken            : 'findyourtokenonpushoverwebsite'
+          defaultuser             : 'findyouruseronpushoverwebsite'
+          defaulttitle            : 'OpenHAB'
+          defaultpriority         : 0
+          defaulturl              : ''
+          defaulturltitle         : ''
+          defaulturltitle         : ''
+          defaultretry            : 300
+          defaultexpire           : 3600
 ```
 in rules you can send a message through pushover with the following code:
 ```
 pushover("Laundry machine is finished")
 ```
 
-#### binding mqtt
+#### Action mqtt
 (I am using it with mqttwarn for sending messages, in the example beneath I use
 it to signal me, the laundrymachine is fisnished)
 Hiera
 ```
-openhab::binding_mqtt_id                  : 'raspi'
-openhab::binding_mqtt_url                 : 'tcp://localhost:1883'
+openhab_addons:
+  action-pushover:
+      configuration:
+          id                    : 'raspi'
+          url                   : 'tcp://localhost:1883'
 ```
 
 Items file for sending a message:
@@ -110,6 +150,121 @@ in a rule:
 ```
 postUpdate(mqWas, "was is klaar")
 ```
+
+#### Binding zwave
+Hiera
+```
+openhab_addons:
+   binding-zwave:
+       configuration:
+           port                    : '/dev/ttyUSB0'
+           healtime                : 2
+           mastercontroller        : true
+           setsuc                  : false
+           softreset               : false
+```
+
+#### Binding http
+Hiera
+```
+openhab_addons:
+   binding-http:
+       configuration:
+           timeout                 : 500
+           caches: []
+```
+
+#### Binding weather
+Hiera
+```
+openhab_addons:
+   binding-weather:
+       configuration:
+           locations:
+               - id                : 'home'
+                 name              : 'home'
+                 latitude          : '0.0000'
+                 longitude         : '0.0000'
+                 woeid             : '123456'
+                 provider          : 'Yahoo'
+                 language          : 'de'
+                 updateinterval    : '60'
+           apikeys: []
+```
+
+#### Binding hue
+Hiera
+```
+openhab_addons:
+   binding-hue:
+       configuration:
+           ip                      : 'huebridge-ip-or-hostname'
+           secret                  : 'openHABRuntime'
+           refresh                 : '1000'
+```
+
+#### Binding astro
+Hiera
+```
+openhab_addons:
+   binding-astro:
+       configuration:
+           latitude                : '0.0000'
+           longitude               : '0.0000'
+           interval                : '600'
+```
+
+#### Binding sonos
+Hiera
+```
+openhab_addons:
+   binding-sonos:
+       configuration:
+           pollingperiod           : 1000
+           hosts:
+               - host              : 'kueche'
+                 rinconuid         : 'RINCON_1234567'
+               - host              : 'kind'
+                 rinconuid         : 'RINCON_1234568'
+```
+
+#### Binding denon
+Hiera
+```
+openhab_addons:
+   binding-denon:
+       configuration:
+         update                    : 5000
+         hosts:
+             - host                : 'denon1'
+               ip                  : '127.0.0.1'
+               update              : 'telnet'
+```
+
+#### Persistence mysql
+Hiera
+```
+openhab_addons:
+   persistence-mysql:
+       configuration:
+           url                     : 'jdbc:mysql://127.0.0.1:3306/openhab'
+           user                    : 'openhab'
+           password                : 'openhab'
+           waittimeout             : '30'
+           reconnectcnt            : '5'
+```
+
+#### Persistence mongodb
+Hiera
+```
+openhab_addons:
+   persistence-mongodb:
+       configuration:
+           url                     : 'mongodb://127.0.0.1:27017'
+           database                : 'openhab'
+           collection              : 'openhab'
+```
+
 ## Limitations
 
 Currently you can use plugins from a different version but you are limited to a single
@@ -121,7 +276,6 @@ Currently working on getting all the basics working. For lots of addons I do acc
 If you prefer to have me writing the support for an addon, please create an issue on github.
 
 ### Todo
-* fixing the custom facts for myopenhab uuid/secret (can use some help)
 * test on centos/etc
 * habmin is installed, but requires zwave addon, without it doesnt work, need to ensure a zwave addon is available
 * lots of modules need their config in the openhab.cfg, so lots of work on the template. Please make issues for requests
